@@ -10,6 +10,13 @@ function submitTransaction() {
       text: 'Bill yang ngutang kok lebih gede dari total bill nya?',
     });
   } else {
+	Swal.fire({ // Loading indicator during settleUp
+    	title: 'Nyatet...',
+    	allowOutsideClick: false, // Prevent closing until done
+    	didOpen: () => {
+      		Swal.showLoading(); 
+    	},
+  });
     console.log(othersBill);
     fetch(
       'https://script.google.com/macros/s/AKfycbyQCFlDHQP0SQ4tssjCAIA_zlYPin-0Py0caaa3cjB2LDlFCgxOjVRWZwWtWrCWGrI/exec?action=submitTransaction',
@@ -30,6 +37,7 @@ function submitTransaction() {
       console.log(data);
       refreshTransactionHistory();
       updateSummary();
+	Swal.close();
       Swal.fire({ // Success message after submission
         icon: 'success',
         title: 'Transaction Submitted!',
@@ -178,6 +186,13 @@ function confirmDelete(rowIndex) {
 }
 
 function deleteTransaction(rowIndex) {
+Swal.fire({ // Loading indicator during settleUp
+    title: 'Deleting...',
+    allowOutsideClick: false, // Prevent closing until done
+    didOpen: () => {
+      Swal.showLoading(); 
+    },
+});
   fetch(`https://script.google.com/macros/s/AKfycbyQCFlDHQP0SQ4tssjCAIA_zlYPin-0Py0caaa3cjB2LDlFCgxOjVRWZwWtWrCWGrI/exec?action=deleteTransaction&rowIndex=${rowIndex}`, {
     method: 'POST', 
     redirect: 'follow',
@@ -186,6 +201,7 @@ function deleteTransaction(rowIndex) {
     },
   })
   .then(data => {
+	Swal.close()
     console.log(data); 
     refreshTransactionHistory();
     updateSummary();
@@ -196,6 +212,7 @@ function deleteTransaction(rowIndex) {
     );
   })
   .catch(error => {
+	Swal.close()
     console.error('Error deleting transaction:', error);
     Swal.fire({ // Error message if deletion fails
       icon: 'error',
